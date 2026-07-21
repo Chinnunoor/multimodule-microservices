@@ -1,0 +1,27 @@
+services:
+  customer-service:
+    build:
+      context: .
+      dockerfile: services/customer-service/Dockerfile
+    ports:
+      - "8081:8081"
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    ports:
+      - "8083:8083"
+
+  order-service:
+    build:
+      context: .
+      dockerfile: services/order-service/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      CUSTOMER_SERVICE_URL: http://customer-service:8081
+      NOTIFICATION_SERVICE_URL: http://notification-service:8083
+    depends_on:
+      - customer-service
+      - notification-service
