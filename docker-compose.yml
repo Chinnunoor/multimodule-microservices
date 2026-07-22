@@ -25,3 +25,9 @@ services:
     depends_on:
       - customer-service
       - notification-service
+  payment-service:
+    build:
+      context: .
+      dockerfile: services/payment-service/Dockerfile
+    ports:
+      - "8084:8084"
