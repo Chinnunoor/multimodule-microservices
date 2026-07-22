@@ -1,5 +1,7 @@
 name: Dynamically Build and Push Microservice Images
 
+run-name: Build Type - ${{ inputs.buildType || github.event_name }}
+
 on:
   push:
     branches:
