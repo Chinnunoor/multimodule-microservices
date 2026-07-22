@@ -98,7 +98,7 @@ jobs:
         with:
           build-args: |
             BUILD_TYPE=release
-            BUILD_NUMBER=${{ github.run_number }}
+            VERSION=${{ steps.image-info.outputs.version }}
           context: .
           file: services/${{ matrix.service }}/Dockerfile
           push: true
