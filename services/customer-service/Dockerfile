@@ -8,7 +8,7 @@ RUN mvn -pl services/customer-service -am clean package -DskipTests
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
-COPY --from=build /workspace/services/customer-service/target/customer-service-1.0.0-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/services/customer-service/target/customer-service-*.jar app.jar
 
 EXPOSE 8081
 

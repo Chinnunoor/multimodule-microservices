@@ -12,7 +12,7 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 COPY --from=build \
-    /workspace/services/payment-service/target/payment-service-1.0.0-SNAPSHOT.jar \
+    /workspace/services/payment-service/target/payment-service-*.jar \
     app.jar
 
 EXPOSE 8084

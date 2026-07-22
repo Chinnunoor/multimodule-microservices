@@ -31,14 +31,7 @@ jobs:
         id: discover
         shell: bash
         run: |
-          SERVICES=$(find services \
-            -mindepth 2 \
-            -maxdepth 2 \
-            -name Dockerfile \
-            -print0 \
-            | xargs -0 -n1 dirname \
-            | xargs -n1 basename \
-            | jq -R -s -c 'split("\n")[:-1]')
+          SERVICES=$(find services -mindepth 2 -maxdepth 2 -name Dockerfile -print0 | xargs -0 -n1 dirname | xargs -n1 basename | jq -R -s -c 'split("\n")[:-1]')
 
           echo "Discovered services:"
           echo "$SERVICES"
@@ -68,7 +61,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Prepare image information
+        id: image-info
+        shell: bash
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
 
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+
+          echo "Short SHA: $SHORT_SHA"
+    
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
@@ -83,16 +85,13 @@ jobs:
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v7
         with:
-
           context: .
-
           file: services/${{ matrix.service }}/Dockerfile
-
           push: true
 
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service }}:${{ steps.image-info.outputs.short_sha }}
 
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service }}
